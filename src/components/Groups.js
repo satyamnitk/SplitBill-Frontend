@@ -4,12 +4,12 @@ import {
   Card,
   CardContent,
   CardActions,
-  Grid,
   Typography,
   Box,
   createTheme,
   ThemeProvider,
   CssBaseline,
+  Grid,
 } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -21,7 +21,6 @@ const apiUrl = process.env.REACT_APP_API_URL;
 const theme = createTheme({
   palette: {
     primary: { main: "#1976d2" },
-    secondary: { main: "#9c27b0" },
     background: { default: "#f9f9fc" },
   },
   typography: {
@@ -39,20 +38,22 @@ const Groups = () => {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const userRef = React.useRef(userData);
+
 
   useEffect(() => {
-    if (!userData) return;
+    if (!userRef.current) return;
 
     const userGroups = async () => {
       setLoading(true);
       try {
         const response = await axios.post(`${apiUrl}/groups`, {
-          _id: userData._id,
-          email: userData.email,
+          _id: userRef.current._id,
+          email: userRef.current.email,
         });
+
         if (response.status === 200) {
           setGroups(response.data.groups);
-          toast.success("Groups loaded successfully!");
         }
       } catch {
         toast.error("Failed to load groups.");
@@ -62,7 +63,8 @@ const Groups = () => {
     };
 
     userGroups();
-  }, []);
+  }, []); 
+
 
   if (!userData) {
     return (
@@ -111,21 +113,27 @@ const Groups = () => {
             You haven’t joined or created any groups yet.
           </Typography>
         ) : (
-          <Grid container spacing={3}>
+          <Grid
+            container
+            spacing={3}
+            justifyContent="center"
+            sx={{ px: { xs: 1, sm: 2, md: 6 } }}
+          >
             {groups.map((group, index) => (
               <Grid
                 item
-                xs={12}      // mobile: 1 per row
-                sm={6}       // tablet: 2 per row
-                md={4}       // laptop+: 3 per row
+                xs={12}     
+                sm={6}      
+                md={4}      
                 key={index}
-                sx={{ display: "flex" }}
+                sx={{ display: "flex", justifyContent: "center" }}
               >
                 <Card
                   elevation={3}
                   sx={{
+                    width: "100%",
+                    maxWidth: 380,
                     borderRadius: 3,
-                    flex: 1,
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
@@ -134,13 +142,13 @@ const Groups = () => {
                       transform: "translateY(-4px)",
                       boxShadow: 5,
                     },
-                    width: "100%",
                   }}
                 >
                   <CardContent>
                     <Typography variant="h6" gutterBottom color="primary">
                       {group.groupName}
                     </Typography>
+
                     <Typography
                       variant="body2"
                       color="text.secondary"
@@ -158,18 +166,16 @@ const Groups = () => {
                   <CardActions
                     sx={{
                       display: "flex",
-                      flexDirection: "row",
                       justifyContent: "space-between",
                       gap: 1,
                       p: 2,
-                      flexWrap: { xs: "wrap", sm: "nowrap" },
                     }}
                   >
                     <Button
                       variant="outlined"
-                      fullWidth
                       size="small"
                       color="inherit"
+                      sx={{ flex: 1, borderRadius: 3}}
                       onClick={() =>
                         navigate("/users/groups/add-expense", {
                           state: { group },
@@ -181,9 +187,9 @@ const Groups = () => {
 
                     <Button
                       variant="outlined"
-                      fullWidth
                       size="small"
                       color="inherit"
+                      sx={{ flex: 1, borderRadius: 3 } }
                       onClick={() =>
                         navigate("/users/groups/view-expenses", {
                           state: {
@@ -200,9 +206,9 @@ const Groups = () => {
 
                     <Button
                       variant="outlined"
-                      fullWidth
                       size="small"
                       color="inherit"
+                      sx={{ flex: 1, borderRadius: 3 }}
                       onClick={() =>
                         navigate("/users/groups/view-members", {
                           state: { group },

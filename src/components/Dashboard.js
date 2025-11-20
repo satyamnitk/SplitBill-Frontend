@@ -90,8 +90,8 @@ const Dashboard = () => {
 
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 <Button
-                  variant="contained"
-                  color="primary"
+                  variant="outlined"
+                  color="inherit"
                   fullWidth
                   onClick={handleLogout}
                   sx={{ borderRadius: 3, py: 1 }}
@@ -99,8 +99,8 @@ const Dashboard = () => {
                   Logout
                 </Button>
                 <Button
-                  variant="contained"
-                  color="primary"
+                  variant="outlined"
+                  color="inherit"
                   fullWidth
                   onClick={() => navigate("/users/create-group")}
                   sx={{ borderRadius: 3, py: 1 }}
@@ -108,8 +108,8 @@ const Dashboard = () => {
                   Create New Group
                 </Button>
                 <Button
-                  variant="contained"
-                  color="primary"
+                  variant="outlined"
+                  color="inherit"
                   fullWidth
                   onClick={() => navigate("/users/groups")}
                   sx={{ borderRadius: 3, py: 1 }}

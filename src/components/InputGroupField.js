@@ -16,7 +16,6 @@ import {
   List,
   ListItem,
   ListItemText,
-  useMediaQuery,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
@@ -32,38 +31,40 @@ const theme = createTheme({
   },
 });
 
-const StyledDialog = ({ open, onClose, title, isMobile, children }) => (
+const StyledDialog = ({ open, onClose, title, children }) => (
   <Dialog
     open={open}
     onClose={onClose}
-    fullWidth
-    maxWidth="xs"
-    fullScreen={isMobile}
-    slotProps={{
-      paper: {
-        sx: {
-          borderRadius: isMobile ? 0 : 4,
-          p: 2,
-          boxShadow: 8,
-          width: isMobile ? "100%" : 420,
-          maxWidth: "90vw",
-        },
+    PaperProps={{
+      sx: {
+        width: "360px",
+        maxWidth: "360px",
+        borderRadius: "12px",
+        p: 2,
+        background: "#fff",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
       },
     }}
   >
     <IconButton
       aria-label="close"
       onClick={onClose}
-      sx={{ position: "absolute", right: 8, top: 10, zIndex: 10 }}
+      sx={{ position: "absolute", right: 10, top: 10 }}
     >
       <CloseIcon />
     </IconButton>
 
-    <DialogTitle sx={{ pr: 5, textAlign: "center", fontWeight: 600 }}>
+    <DialogTitle
+      sx={{
+        textAlign: "center",
+        fontWeight: 600,
+        pb: 1,
+      }}
+    >
       {title}
     </DialogTitle>
 
-    <DialogContent dividers>{children}</DialogContent>
+    <DialogContent>{children}</DialogContent>
   </Dialog>
 );
 
@@ -80,8 +81,6 @@ const InputGroupField = () => {
   const [inviteSending, setInviteSending] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [inviteSent, setInviteSent] = useState(false);
-
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   if (!userData) return <div>User data not found.</div>;
 
@@ -159,8 +158,7 @@ const InputGroupField = () => {
 
     const finalName = foundName || friendNameInput;
 
-    if (!finalName)
-      return toast.error("Please enter your friend's name.");
+    if (!finalName) return toast.error("Please enter your friend's name.");
 
     if (isAlreadyAdded(friendEmailInput))
       return toast.error("This email is already added.");
@@ -255,7 +253,6 @@ const InputGroupField = () => {
                   borderRadius: 4,
                   p: { xs: 2, sm: 5 },
                   backgroundColor: "rgba(255,255,255,0.85)",
-                  backdropFilter: "blur(10px)",
                 }}
               >
                 <CardContent>
@@ -276,7 +273,6 @@ const InputGroupField = () => {
                         fullWidth
                         value={groupName}
                         onChange={(e) => setGroupName(e.target.value)}
-                        sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
                       />
                     </Grid>
 
@@ -288,7 +284,6 @@ const InputGroupField = () => {
                         value={friendEmailInput}
                         onChange={(e) => setFriendEmailInput(e.target.value)}
                         helperText="* Enter the email to check if the user is registered on SplitBill."
-                        sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
                       />
                     </Grid>
 
@@ -303,26 +298,20 @@ const InputGroupField = () => {
                               readOnly: true,
                             },
                           }}
-                          sx={{
-                            "& .MuiOutlinedInput-root": { borderRadius: 3 },
-                          }}
                         />
                       </Grid>
                     )}
 
                     <Grid item xs={12}>
                       <Box sx={{ display: "flex", gap: 2, width: "100%" }}>
-                        <Button
-                          fullWidth
-                          variant="outlined"
-                          onClick={handleFindUser}
-                        >
+                        <Button fullWidth variant="outlined" color="inherit" onClick={handleFindUser}>
                           Find Friend
                         </Button>
 
                         <Button
                           fullWidth
                           variant="outlined"
+                          color="inherit"
                           onClick={handleAddFriend}
                           disabled={!canAddFriend}
                         >
@@ -331,18 +320,11 @@ const InputGroupField = () => {
                       </Box>
                     </Grid>
 
-                    {foundName && (
-                      <Grid item xs={12}>
-                        <Typography>
-                          Account Found: <strong>{foundName}</strong>
-                        </Typography>
-                      </Grid>
-                    )}
-
                     <Grid item xs={12}>
                       <Button
                         fullWidth
                         variant="outlined"
+                        color="inherit"
                         onClick={() => setDialogOpen(true)}
                       >
                         Added Friends
@@ -363,8 +345,7 @@ const InputGroupField = () => {
                   <StyledDialog
                     open={dialogOpen}
                     onClose={() => setDialogOpen(false)}
-                    title="Friends Added to Group"
-                    isMobile={isMobile}
+                    title="Friends Added"
                   >
                     {members.length === 0 ? (
                       <Typography>No friends added yet.</Typography>
@@ -382,9 +363,7 @@ const InputGroupField = () => {
                               </IconButton>
                             }
                           >
-                            <ListItemText
-                              primary={name ? `${name} (${email})` : email}
-                            />
+                            <ListItemText primary={`${name} (${email})`} />
                           </ListItem>
                         ))}
                       </List>
@@ -395,23 +374,15 @@ const InputGroupField = () => {
                     open={inviteDialogOpen}
                     onClose={() => setInviteDialogOpen(false)}
                     title="No Account Found"
-                    isMobile={isMobile}
                   >
-                    <Typography mb={1}>
-                      No account found. You can send an invite.
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      mb={2}
-                    >
-                      You’ll need a SplitBill account to use transaction
-                      features.
+                    <Typography mb={2}>
+                      Please send an invite to let them join SplitBill.
                     </Typography>
 
                     <TextField
                       fullWidth
                       label="Friend's Name"
+                      required
                       value={friendNameInput}
                       onChange={(e) => setFriendNameInput(e.target.value)}
                       sx={{ mt: 1 }}

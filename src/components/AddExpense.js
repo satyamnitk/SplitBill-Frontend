@@ -6,12 +6,12 @@ import {
   Button,
   Card,
   CardContent,
-  Container,
   createTheme,
   Grid,
   TextField,
   ThemeProvider,
   Typography,
+  Box,
 } from "@mui/material";
 
 const theme = createTheme({
@@ -32,88 +32,106 @@ const AddExpense = () => {
       toast.error("Complete all the fields first.");
       return;
     }
-
-    setNext((prev) => !prev);
+    setNext(true);
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <Container maxWidth="md">
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+          px: 2,
+          background: "linear-gradient(135deg, #90caf9, #ce93d8)",
+        }}
+      >
         {!next ? (
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Card elevation={3}>
-                <CardContent>
-                  <Typography variant="h4" gutterBottom>
-                    SplitBill
+          <Card
+            elevation={6}
+            sx={{
+              width: "100%",
+              maxWidth: 500,
+              borderRadius: 4,
+              p: 3,
+              background: "#ffffff",
+            }}
+          >
+            <CardContent>
+              <Typography
+                variant="h6"
+                fontWeight={700}
+                textAlign="center"
+                mb={3}
+              >
+                Add Expense
+              </Typography>
+
+              <Grid container spacing={3} direction="column">
+                <Grid item xs={12}>
+                  <TextField
+                    label="Total Spend"
+                    variant="outlined"
+                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                    fullWidth
+                    value={totalSpend}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (!isNaN(value) && value >= 0) setTotalSpend(value);
+                    }}
+                    required
+                  />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Typography fontWeight={600} mb={1}>
+                    Split Method
                   </Typography>
-                  <Grid item xs={12}>
-                    <TextField
-                      label="Total Spend"
-                      variant="outlined"
-                      fullWidth
-                      value={totalSpend}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        if (!isNaN(value) && value >= 0) {
-                          setTotalSpend(value);
-                        }
-                      }}
-                      required
-                    />
-                  </Grid>
-                  <Grid container spacing={2} sx={{ mt: 1 }}>
-                    <Grid item xs={6}>
-                      <Button
-                        variant="contained"
-                        fullWidth
-                        size="medium"
-                        style={{
-                          fontSize: "0.75rem",
-                          padding: "8px 16px",
-                        }}
-                        color={divideMethod === "equal" ? "primary" : "inherit"}
-                        onClick={() => setDivideMethod("equal")}
-                      >
-                        Equal
-                      </Button>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Button
-                        variant="contained"
-                        fullWidth
-                        size="medium"
-                        style={{
-                          fontSize: "0.75rem",
-                          padding: "8px 16px",
-                        }}
-                        color={
-                          divideMethod === "custom" ? "primary" : "inherit"
-                        }
-                        onClick={() => setDivideMethod("custom")}
-                      >
-                        Custom
-                      </Button>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={12} sx={{ mt: 3 }}>
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 2,
+                      width: "100%",
+                    }}
+                  >
                     <Button
-                      variant="contained"
                       fullWidth
-                      size="medium"
-                      style={{
-                        fontSize: "0.75rem",
-                        padding: "8px 16px",
-                      }}
-                      onClick={handleNext}
+                      variant={divideMethod === "equal" ? "contained" : "outlined"}
+                      color="inherit"
+                      sx={{ borderRadius: 3 }}
+                      onClick={() => setDivideMethod("equal")}
                     >
-                      Next
+                      Equal
                     </Button>
-                  </Grid>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
+
+                    <Button
+                      fullWidth
+                      variant={divideMethod === "custom" ? "contained" : "outlined"}
+                      color="inherit"
+                      sx={{ borderRadius: 3 }}
+                      onClick={() => setDivideMethod("custom")}
+                    >
+                      Custom
+                    </Button>
+                  </Box>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    size="medium"
+                    onClick={handleNext}
+                    sx={{ borderRadius: 3 }}
+                  >
+                    Next
+                  </Button>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
         ) : (
           <FriendInput
             group={group}
@@ -122,7 +140,7 @@ const AddExpense = () => {
             divideMethod={divideMethod}
           />
         )}
-      </Container>
+      </Box>
     </ThemeProvider>
   );
 };
